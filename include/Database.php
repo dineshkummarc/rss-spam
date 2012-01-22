@@ -41,11 +41,27 @@ class Database {
 		$stmt = $this->pdo->prepare(
 			'select id from feeds ' .
 			'where url_hash = ? and ' .
-			'(unix_timestamp(current_timestamp) - unix_timestamp(last_updated)) > ?;'
+			'(unix_timestamp(current_timestamp) - unix_timestamp(last_updated)) > ?'
 		);
 
 		$stmt->execute(array($urlHash, $updateInterval));
 
 		return $stmt->rowCount() > 0;
+	}
+
+	public function getFeedId($urlHash) {
+		$stmt = $this->pdo->prepare(
+			'select id from feeds ' .
+			'where url_hash = ?'
+		);
+
+		$stmt->execute(array($urlHash));
+
+		$result = $stmt->fetch();
+		if (!$result) {
+			return false;
+		}
+
+		return $result['id'];
 	}
 }
