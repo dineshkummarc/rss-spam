@@ -1,10 +1,9 @@
 <?
-$config = array(
-	'db_host' => 'localhost',
-	'db_database' => 'rss_spam',
-	'db_username' => 'root',
-	'db_password' => '',
-
+$dbConfig = array(
+	'host' => 'localhost',
+	'database' => 'rss_spam',
+	'username' => 'root',
+	'password' => ''
 );
 
-$feeds => array();
+$feeds = array();
