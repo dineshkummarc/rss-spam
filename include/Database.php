@@ -14,6 +14,14 @@ class Database {
 		$this->dbo = null;
 	}
 
+	public function beginTransaction() {
+		return $this->pdo->beginTransaction();
+	}
+
+	public function commit() {
+		return $this->pdo->commit();
+	}
+
 	public function ensureFeedExists($url) {
 		$this->pdo->beginTransaction();
 
@@ -63,5 +71,16 @@ class Database {
 		}
 
 		return $result['id'];
+	}
+
+	public function doesFeedItemExist($feedId, $itemGuid) {
+		$stmt = $this->pdo->prepare(
+			'select id from items ' .
+			'where feed_id = ? and guid = ?'
+		);
+
+		$stmt->execute(array($feedId, $itemGuid));
+
+		return $stmt->rowCount() > 0;
 	}
 }
