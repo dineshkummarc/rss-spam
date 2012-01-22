@@ -86,10 +86,19 @@ class Database {
 
 	public function addFeedItem($feedId, $itemGuid) {
 		$stmt = $this->pdo->prepare(
-			'insert into items (feed_id, guid)' .
+			'insert into items (feed_id, guid) ' .
 			'values(?, ?)'
 		);
 
 		return $stmt->execute(array($feedId, $itemGuid));
+	}
+
+	public function bumpLastUpdated($feedId) {
+		$stmt = $this->pdo->prepare(
+			'update feeds set last_updated = current_timestamp ' .
+			'where id = ?'
+		);
+
+		return $stmt->execute(array($feedId));
 	}
 }

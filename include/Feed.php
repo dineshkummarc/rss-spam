@@ -50,6 +50,7 @@ class Feed {
 			}
 		}
 
+		$db->bumpLastUpdated($feedId);
 		$db->commit();
 		return true;
 	}

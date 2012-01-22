@@ -12,9 +12,7 @@ foreach ($config['feeds'] as $feed) {
 	print 'Processing ' . $feed['url'] . ' ...';
 	$db->ensureFeedExists($feed['url']);
 	$feed = new Feed($feed);
-	if (!$feed->update($db, $mailer)) {
-		print 'Error with ' . $feed['url'] . '!';
-	}
+	$feed->update($db, $mailer);
 
 	print "\n";
 }
