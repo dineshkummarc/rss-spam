@@ -13,7 +13,9 @@ $config = array(
 	),
 
 	'feeds' => array(
-		'url' => 'http://example.com/index.rss',
-		'updateInterval' => 3600
+		array(
+			'url' => 'http://example.com/index.rss',
+			'updateInterval' => 3600
+		)
 	)
 );
