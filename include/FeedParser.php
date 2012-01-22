@@ -75,6 +75,7 @@ class FeedParser {
 
 			array_push($feed['items'], array(
 				'id' => $id,
+				'title' => (string)$items[$j]->title,
 				'link' => self::getLink($items[$j]),
 				'content' => self::getContent($items[$j])
 			));

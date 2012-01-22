@@ -24,13 +24,33 @@ class Feed {
 		return FeedParser::parse($data);
 	}
 
-	public function update($db, $force = false) {
-		if (!$force) {
-			if (!$this->db->shouldFeedUpdate($this->urlHash, $this->updateInterval)) {
-				return false;
+	public function update($db, $mailer) {
+		if (!$db->shouldFeedUpdate($this->urlHash, $this->updateInterval)) {
+			return false;
+		}
+
+		$feed = $this->loadFeed();
+		if (!$feed) {
+			return false;
+		}
+
+		$db->beginTransaction();
+		$feedId = $db->getFeedId($this->urlHash);
+
+		foreach ($feed['items'] as $item) {
+			if ($db->doesFeedItemExist($feedId, $item['id'])) {
+				continue;
+			}
+
+			if ($db->addFeedItem($feedId, $item['id'])) {
+				$mailer->mail(
+					$item['title'] . ' :: ' . $feed['title'],
+					$item['content'] . "\r\n\r\n" . $item['link']
+				);
 			}
 		}
 
-		return $this->loadFeed();
+		$db->commit();
+		return true;
 	}
 }
