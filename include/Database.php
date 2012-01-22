@@ -83,4 +83,13 @@ class Database {
 
 		return $stmt->rowCount() > 0;
 	}
+
+	public function addFeedItem($feedId, $itemGuid) {
+		$stmt = $this->pdo->prepare(
+			'insert into items (feed_id, guid)' .
+			'values(?, ?)'
+		);
+
+		return $stmt->execute(array($feedId, $itemGuid));
+	}
 }
