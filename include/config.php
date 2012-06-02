@@ -15,7 +15,10 @@ $config = array(
 	'feeds' => array(
 		array(
 			'url' => 'http://example.com/index.rss',
-			'updateInterval' => 3600
+			'updateInterval' => 3600,
 		)
+	),
+	'parser'       => array(
+		//'diffbot'   => 'TOKEN GOES HERE'
 	)
 );

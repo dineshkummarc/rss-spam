@@ -3,11 +3,15 @@ class Feed {
 	protected $url;
 	protected $urlHash;
 	protected $updateInterval;
+	protected $parser;
+	protected $parserToken;
 
-	public function __construct($args) {
+	public function __construct($args, $parser = null, $parserToken = null) {
 		$this->url = $args['url'];
 		$this->urlHash = md5($this->url);
 		$this->updateInterval = $args['updateInterval'];
+		$this->parser = $parser;
+		$this->parserToken = $parserToken;
 	}
 
 	protected function loadFeed() {
@@ -21,7 +25,7 @@ class Feed {
 			return null;
 		}
 
-		return FeedParser::parse($data);
+		return FeedParser::parse($data, $this->parser, $this->parserToken);
 	}
 
 	public function update($db, $mailer) {
