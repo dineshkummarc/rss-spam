@@ -1,5 +1,20 @@
 <?
 class FeedParser {
+	protected static function diffbot($link, $token)
+	{
+		$curl = curl_init();
+		curl_setopt($curl, CURLOPT_URL, 'http://www.diffbot.com/api/article?token='.$token.'&url='.urlencode($link));
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+		$data = curl_exec($curl);
+		$data = json_decode($data);
+
+		if(isset($data->text)) {
+			return $data->text;
+		}
+
+		return null;
+	}
+
 	protected static function getItems($node) {
 		$items = $node->entry; // Atom
 		if (!count($items)) {
@@ -48,7 +63,7 @@ class FeedParser {
 		return $content;
 	}
 
-	public static function parse($data) {
+	public static function parse($data, $parser = null, $parserToken = null) {
 		$root = simplexml_load_string($data);
 
 		$title = (string)$root->title; // Assume Atom
@@ -73,12 +88,21 @@ class FeedParser {
 				continue;
 			}
 
-			array_push($feed['items'], array(
+			$item = array(
 				'id' => $id,
 				'title' => (string)$items[$j]->title,
 				'link' => self::getLink($items[$j]),
 				'content' => self::getContent($items[$j])
-			));
+			);
+
+			if(null !== $parser && in_array($parser, get_class_methods(get_called_class()))) {
+				$content = self::$parser($item['link'], $parserToken);
+				if(null !== $content) {
+					$item['content'] = $content;
+				}
+			}
+
+			array_push($feed['items'], $item);
 		}
 
 		return $feed;
